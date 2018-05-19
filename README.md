@@ -27,9 +27,11 @@ You may also assume:
 Implementation 
 ---
 
-For each input line, search the collection of fragments to locate the pair with the maximal overlap match then merge those two fragments. This operation will decrease the total number of fragments by one. Repeat until there is only one fragment remaining in the collection. This is the defragmented line / reassembled document. 
-If there is more than one pair of maximally overlapping fragments in any iteration then just merge one of them. So long as you merge one maximally overlapping pair per iteration the test inputs are guaranteed to result in good and deterministic output. 
+For each input line, search the collection of fragments to locate the pair with the maximal overlap match then merge those two fragments. This operation will decrease the total number of fragments by one. Repeat until there is only one fragment remaining in the collection. This is the defragmented line / reassembled document. If there is more than one pair of maximally overlapping fragments in any iteration then just merge one of them. So long as you merge one maximally overlapping pair per iteration the test inputs are guaranteed to result in good and deterministic output. 
 When comparing for overlaps, compare case sensitively. 
+
+The merging process is handled using recursion over strategies via the Strategy Design Pattern (which implement the above two algorithms). Therein there exists a strategy to search for the next fragment, and a strategy to merge the fragments. Choosing different strategies allows an object responsible to compile documents together, the document compositor, to produce different results. We can then trivially choose the strategies of choice to produce the desired output. Strategies are designed to cleanly fail, and if something really bad happens for whatever reason during the merging process you can always choose to restore from a backup as part of the implementation (a feature in the spirit of production ready design).
+
 
 How to run
 ---
@@ -37,18 +39,6 @@ How to run
 Compile the source code and execute the program as a Java application passing the input file as an absolute path to the main method found in the class BadNiecesIO (at the ```badnieces``` project package).
 Make sure that LOGS_DIR configuration in the BadNiecesIO class points to a valid directory (ideally an empty folder).
 
-Definitions.
----
-The working definitions of this application are the following...
-* A fragment is defined a mergable string.
-* A line is defined as a set of text fragments separated by semi-colons.
-* A fragment thus contains no semi-colons (denoting a new line).
-
-Solving the algorithm
----
-
-There were two main challenges to solving the algorithm.
-The first challenge was identifying the maximally overlapping pairs, the second challenge was identifying how to then merge the maximally overlapping pairs.
 
 Identifying Maximally Overlapping Pairs
 ---
@@ -140,7 +130,7 @@ Continue building the range of that index [DEF].
 At the end of that index continue building the second string until termination [ABCDEF].
 ```
 
-Solution Design Considerations
+Additional Solution Design Considerations
 ---
 
 * The scenario is to be designed as an application, and not as a script. The problem could be solved using Python providing an implementation of the ShortestSuperStringProblem. But where the programming challenge resembles a test of programming competency, it should best feature a solution approach by simplifying the problem and implementing a solution using object oriented programming concepts.
@@ -150,15 +140,4 @@ Solution Design Considerations
 * In the future we might want to search documents in many different ways. Additionally, in the future we might want to merge documents in many different ways. The implementation should thus not strongly couple the algorithm to search the document or merge the document with the algorithm used to solve the problem statement (it should be flexible to allow us to search many fragments in many different ways).
 * The application should be scalable. To illustrate, what if we want to support many documents being processed concurrently.
 * The application should focus on object oriented architecture (and not a glorified call and return strategy). Each object should be responsibly driven, have its own function and purpose.
-
-Implementation
----
- * The merging process is handled using recursion over strategies via the Strategy Design Pattern (which implement the above two algorithms). Therein there exists a strategy to search for the next fragment, and a strategy to merge the fragments. Choosing different strategies allows an object responsible to compile documents together, the document compositor, to produce different results.
- * In this case we can trivially choose the strategies of choice to produce the desired output. Strategies are designed to cleanly fail, and if something really bad happens for whatever reason during the merging process you can always choose to restore from a backup as part of the implementation (a feature in the spirit of production ready design).
-
-
-Greatest Challenge
----
- * A first the algorithm used to solve the problem was strongly coupled one way or another to the document itself (iterating through arrays of characters to resolve the issue). Even the strategies somewhat depended on each other as they were passing around strings and arrays of characters. The algorithms went through multiple iterations not to solve the problem as such, but to find the right choice of generified objects which can be used to search and merge our fragments.
- * Taking to heart what you said. "Write production level code" and "You wouldn't write a script in Java." We are writing an application. Not a tool. I focused more on making more modular the elements of the application so they can be redrafted and re-purposed. What I found is once I had the structure right (what the combinations of functions needs to be and identified I can just use recursion to follow the instructions of the challenge) the application was very easy to debug and refactor (as long as each function was meeting its purpose, in particular the components to get the next overlapping pair and merge a pair, it didn't matter as much how it did it as long as it didn't involve other objects as the theory was sound). 
- * Settled on the Document class which could be changed to better support multi-threading (although since all the data is contained within the object this should be fine).
+* We are building a program, not a script, not a tool. If you want to couple your approach and perform merging all in one algorithm, why do it in Java?
