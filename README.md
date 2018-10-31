@@ -43,9 +43,11 @@ How to run
 Compile the source code and execute the program as a Java application passing the input file as an absolute path to the main method found in the class BadNiecesIO (at the ```badnieces``` project package).
 Make sure that LOGS_DIR configuration in the BadNiecesIO class points to a valid directory (ideally an empty folder).
 
-
-Identifying Maximally Overlapping Pairs
+Strategies
 ---
+
+
+# Search Strategy: Identifying Maximally Overlapping Pairs
 
 Consider the following strings
 ```
@@ -113,8 +115,7 @@ String mergeInto = "DEFABC";
 
 Do we merge ABCDEFABC or DEFABCDEF? Only the order of the merge can determine which of the two results to use. So whatever algorithm we implement should take this into consideration. The merge operation is not then just an overlap, but an overlap pair.
 
-Merging Strings
----
+# Merge Strategy: Merging Strings
 
 If we know the indexes of where the merge occurs then the merging process is trivial substringing.
 
