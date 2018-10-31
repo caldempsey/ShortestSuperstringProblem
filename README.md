@@ -3,9 +3,9 @@ BadNieces (The ShortestSuperstringProblem)
 
 Problem Statement 
 ---
-Write a program to reassemble a given set of text fragments into their original sequence. For this challenge your program should have a main method accepting one argument – the path to a well-formed UTF-8 encoded text file. Each line in the file represents a test case of the main functionality of your program: read it, process it and println to the console the corresponding defragmented output. 
+Our evil niece has torn up our documents! We need to write a program to reassemble a given set of text fragments into their original sequence. 
 
-Each line contains text fragments separated by a semicolon, ‘;’. You can assume that every fragment has length at least 2. 
+Write a program which accepts a main method with one argument – the path to a well-formed UTF-8 encoded text file. Each line in the file represents a test case of the main functionality of your program: read it, process it and println to the console the corresponding defragmented output. Each line contains text fragments separated by a semicolon, ‘;’. You can assume that every fragment has length at least 2. 
 
 Example input 1: 
 O draconia;conian devil! Oh la;h lame sa;saint! 
@@ -27,10 +27,14 @@ You may also assume:
 Implementation 
 ---
 
-For each input line, search the collection of fragments to locate the pair with the maximal overlap match then merge those two fragments. This operation will decrease the total number of fragments by one. Repeat until there is only one fragment remaining in the collection. This is the defragmented line / reassembled document. If there is more than one pair of maximally overlapping fragments in any iteration then just merge one of them. So long as you merge one maximally overlapping pair per iteration the test inputs are guaranteed to result in good and deterministic output. 
-When comparing for overlaps, compare case sensitively. 
+For each input line...
 
-The merging process is handled using recursion over strategies via the Strategy Design Pattern (which implement the above two algorithms). Therein there exists a strategy to search for the next fragment, and a strategy to merge the fragments. Choosing different strategies allows an object responsible to compile documents together, the document compositor, to produce different results. We can then trivially choose the strategies of choice to produce the desired output. Strategies are designed to cleanly fail, and if something really bad happens for whatever reason during the merging process you can always choose to restore from a backup as part of the implementation (a feature in the spirit of production ready design).
+1. Search the collection of fragments to locate the pair of maximal overlap.
+2. Once two fragments with maximal overlap have been identified, match then merge those two fragments. 
+3. This operation will decrease the total number of fragments by one. Repeat until there is only one fragment remaining in the collection. This is the defragmented line / reassembled document. If there is more than one pair of maximally overlapping fragments in any iteration then just merge one of them. 
+4. As long as we merge one maximally overlapping pair per iteration, test inputs are guaranteed to result in good and deterministic output.  
+
+The merging process is handled using recursion over strategies via the Strategy Design Pattern (which implement the above two algorithms). There exists a strategy to search for the next fragment, and a strategy to merge the fragments. Choosing different strategies allows an object responsible to compile documents together, the document compositor, to produce different results. Using this design pattern we can trivially choose the strategies of choice to produce the desired output. The OO design pattern could also (then) be later extended to perform tasks using multiple threads (i.e. one thread per strategy operation). Strategies are designed to cleanly fail, and if something really bad happens for whatever reason during the merging process you can always choose to restore from a backup as part of the implementation (a feature in the spirit of production ready design).
 
 
 How to run
